@@ -2450,12 +2450,7 @@ app.delete('/saludAlumBorrar', async (req, res) => {
 });
 
 
-app.post('/upload', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('No se ha proporcionado ningún archivo');
-  }
-  res.status(200).send('El archivo se cargó correctamente');
-});
+ 
 
 
 app.get('/grupogradoDispo', async (req, res) => {
@@ -3152,16 +3147,7 @@ app.post('/guardarAgenda', async (req, res) => {
 });
 
 
-// Configuración de almacenamiento para Multer
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Guarda los archivos temporalmente en una carpeta local llamada 'uploads'
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname)); // Nombre de archivo único
-  }
-});
+ 
 
 // Ruta para manejar la subida del archivo desde el frontend
 app.post('/subirPdf', upload.single('file'), async (req, res) => {
@@ -3270,35 +3256,7 @@ app.delete('/eliminarEvidencia/:id', async (req, res) => {
 });
 
 
-app.put('/editarEvidencia/:id', upload.single('file'), async (req, res) => {
-  let connection;
-  const { id } = req.params;
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se subió ningún archivo' });
-  }
-  const localFilePath = path.join(__dirname, 'uploads', req.file.filename);
-  const fileContent = fs.readFileSync(localFilePath);
-
-  try {
-    connection = await req.mysqlPool.getConnection();
-
-    // Actualizar archivo en la tabla evidenciasPDF
-    const query = 'UPDATE evidenciasPDF SET pdf = ? WHERE id = ?';
-    await connection.execute(query, [fileContent, id]);
-
-    // Borrar el archivo temporal después de subirlo a la base de datos
-    fs.unlinkSync(localFilePath);
-
-    res.json({ message: 'Archivo PDF actualizado correctamente' });
-  } catch (error) {
-    console.error('Error al actualizar el archivo PDF en la tabla evidenciasPDF:', error);
-    res.status(500).json({ message: 'Error al actualizar el archivo PDF' });
-  } finally {
-    if (connection) {
-      connection.release();
-    }
-  }
-});
+ 
 
 app.get('/descargarEvidencia/:id', async (req, res) => {
   let connection;
