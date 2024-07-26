@@ -1,8 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' },{ storage: multer.memoryStorage() });
-
+ 
 const path = require('path'); 
 
    
