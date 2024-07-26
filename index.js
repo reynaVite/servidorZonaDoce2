@@ -3147,37 +3147,7 @@ app.post('/guardarAgenda', async (req, res) => {
 
  
 
-// Ruta para manejar la subida del archivo desde el frontend
-app.post('/subirPdf', upload.single('file'), async (req, res) => {
-  let connection;
-  const curp = req.app.locals.curp
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se subió ningún archivo' });
-  }
-  const localFilePath = path.join(__dirname, 'uploads', req.file.filename);
-  const fileContent = fs.readFileSync(localFilePath);
-
-  try {
-    connection = await pool.getConnection();
-
-    // Insertar archivo en la tabla evidenciasPDF
-    await connection.query("INSERT INTO evidenciasPDF (id_agenda, pdf, curp) VALUES (?, ?, ?)", [req.body.actividadId, fileContent, curp]);
-    console.log('Archivo PDF subido exitosamente a la tabla evidenciasPDF');
-
-    // Borrar el archivo temporal después de subirlo a la base de datos
-    fs.unlinkSync(localFilePath);
-
-    res.json({ message: 'Archivo PDF subido exitosamente' });
-  } catch (error) {
-    console.error('Error al subir el archivo PDF a la tabla evidenciasPDF:', error);
-    res.status(500).json({ message: 'Error al subir el archivo PDF' });
-  } finally {
-    if (connection) {
-      connection.release(); // Liberar la conexión
-    }
-  }
-});
-
+ 
 
 
 app.get('/verificarExistencia/:actividadId', async (req, res) => {
@@ -3478,43 +3448,7 @@ app.get('/getMaterias', async (req, res) => {
   }
 });
 
-app.post('/submitExamen', upload.single('file'), async (req, res) => {
-  let connection;
-  const curp = req.app.locals.curp;
-  const now = new Date();
-  const fecha = now.toISOString().split('T')[0]; // YYYY-MM-DD
-  const hora = now.toTimeString().split(' ')[0]; // HH:MM:SS
-  const { opcion, descripcion  } = req.body;
-
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se subió ningún archivo' });
-  }
-
-  const localFilePath = path.join(__dirname, 'uploads', req.file.filename);
-  const fileContent = fs.readFileSync(localFilePath);
-
-  try {
-    connection = await pool.getConnection();
-    await connection.query(
-      "INSERT INTO examen (curp, hora, fecha, materia, pdf, descripcion) VALUES (?, ?, ?, ?, ?, ?)",
-      [curp, hora, fecha, opcion, fileContent,descripcion]
-    );
-    console.log('Archivo PDF subido exitosamente a la tabla examen');
-
-    // Borrar el archivo temporal después de subirlo a la base de datos
-    fs.unlinkSync(localFilePath);
-
-    res.json({ message: 'Archivo PDF subido exitosamente' });
-  } catch (error) {
-    console.error('Error al subir el archivo PDF a la tabla examen:', error);
-    res.status(500).json({ message: 'Error al subir el archivo PDF' });
-  } finally {
-    if (connection) {
-      connection.release(); // Liberar la conexión
-    }
-  }
-});
-
+ 
 app.get('/consultarMaterias', async (req, res) => {
   let connection;
   try {
