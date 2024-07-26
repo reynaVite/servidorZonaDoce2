@@ -7,8 +7,8 @@ const path = require('path');
 const fs = require('fs');
 const util = require('util'); 
 
+const bcrypt = require('bcryptjs');
 
-const bcrypt = require('bcrypt');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
 const nodemailer = require('nodemailer');
